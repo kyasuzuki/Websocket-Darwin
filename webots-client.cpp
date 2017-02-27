@@ -92,9 +92,11 @@ int main()
 
   ws = easywsclient::WebSocket::from_url("ws://localhost:8126/foo");
   assert(ws);
-  ws->send("command STOPWALK recieved");
-  ws->send("command WALK recieved");
+  
   ws->send("hello");
+  ws->send("command WALK recieved");
+  ws->send("command STOPWALK recieved");
+
   while (ws->getReadyState() != easywsclient::WebSocket::CLOSED) {
     ws->poll();
     ws->dispatch(handle_message);

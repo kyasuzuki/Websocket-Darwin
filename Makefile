@@ -14,8 +14,7 @@ test_server:
 node_modules:
 	npm install
 
-webots-client: webots-client.o walk-client.o
-easywsclient: easywsclient.o
-webots-client.o: webots-client.cpp webots-client.h
+webots-client: webots-client.o walk-client.o easywsclient.o
+webots-client.o: webots-client.cpp webots-client.h easywsclient.hpp
 walk-client.o: walk-client.cpp walk-client.h
 easywsclient.o: easywsclient.cpp easywsclient.hpp
