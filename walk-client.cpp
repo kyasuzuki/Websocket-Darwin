@@ -9,11 +9,12 @@ void walk(double speed, double angle){
     // DREW FILL THIS IN
 
     // YOU CAN CALL OTHER FILES ETC. JUST ADD INCLUDES
-
+cout << "walk command recieved\n";
 
 }
 
 void stopWalking(){
     // stops Darwin from walking
     // DREW WRITE THIS
+    cout << "stopwalk command recieved";
 }

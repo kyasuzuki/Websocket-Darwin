@@ -43,35 +43,35 @@ void handle_walk(const std::string & r){
             angle = stod(r2);
             walk(speed, angle);
             break;
-            }
+        }
     }
 
 }
- 
+
 
 void handle_message(const std::string & message)
 {
-  
-  size_t curr = 0; // the cursor
-  std::string c (""); // the current message
-  printf(">>> %s\n", message.c_str());
 
-  while (curr < message.length()){
-      if (message[curr] != ' '){
-          c += message[curr];
-          curr++;
-      } else{
-          if (c == "WALK"){
-             std::string r = message.substr(curr + 1, message.length()); //remaining string
-             handle_walk(r);
-          }
-          if (c == "STOPWALK"){
-              stopWalking();
-              ws->close();
-              break;
-              }
-          }
-  }
+    size_t curr = 0; // the cursor
+    std::string c (""); // the current message
+    printf(">>> %s\n", message.c_str());
+
+    while (curr < message.length()){
+        if (message[curr] != ' '){
+            c += message[curr];
+            curr++;
+        } else{
+            if (c == "WALK"){
+                std::string r = message.substr(curr + 1, message.length()); //remaining string
+                handle_walk(r);
+                break;
+            }else if (c == "STOPWALK"){
+                stopWalking();
+                ws->close();
+                break;
+            }
+        }
+    }
 }
 
 
@@ -80,30 +80,28 @@ int main()
 {
 
 #ifdef _WIN32
-  INT rc; 
-  WSADATA wsaData;
+    INT rc; 
+    WSADATA wsaData;
 
-  rc = WSAStartup(MAKEWORD(2, 2), &wsaData);
-  if (rc) {
-    printf("WSAStartup Failed.\n");
-    return 1;
-  }   
+    rc = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if (rc) {
+        printf("WSAStartup Failed.\n");
+        return 1;
+    }   
 #endif
 
-  ws = easywsclient::WebSocket::from_url("ws://localhost:8126/foo");
-  assert(ws);
-  
-  ws->send("hello");
-  ws->send("command WALK recieved");
-  ws->send("command STOPWALK recieved");
+    ws = easywsclient::WebSocket::from_url("ws://localhost:8126/foo");
+    assert(ws);
 
-  while (ws->getReadyState() != easywsclient::WebSocket::CLOSED) {
-    ws->poll();
-    ws->dispatch(handle_message);
-  }   
-  delete ws; 
+    ws->send("hello");
+
+    while (ws->getReadyState() != easywsclient::WebSocket::CLOSED) {
+        ws->poll();
+        ws->dispatch(handle_message);
+    }   
+    delete ws; 
 #ifdef _WIN32
-  WSACleanup();
+    WSACleanup();
 #endif
-  return 0;
+    return 0;
 }
