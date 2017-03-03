@@ -16,5 +16,5 @@ cout << "walk command recieved\n";
 void stopWalking(){
     // stops Darwin from walking
     // DREW WRITE THIS
-    cout << "stopwalk command recieved";
+    cout << "stopwalk command recieved\n";
 }

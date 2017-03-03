@@ -20,10 +20,10 @@
 
 static easywsclient::WebSocket::pointer ws = NULL;
 
-// "WALK 5.8 30.0"
-// walk --> Walk(5,8 30.0);
-// "STOPWALK"
-// stopWalking();
+// if the server sends "WALK 5.8 30.0"
+// the Walk function should be called with the parameters 5.8(speed) and 30.0(angle);
+// if the server sends "STOPWALK"
+// the function stopWalking() should be called and the connection should close;
 
 
 
@@ -42,7 +42,7 @@ void handle_walk(const std::string & r){
             r2 = r.substr(curr2 + 1, r.length());
             angle = stod(r2);
             walk(speed, angle);
-            break;
+           break;
         }
     }
 
@@ -54,22 +54,21 @@ void handle_message(const std::string & message)
 
     size_t curr = 0; // the cursor
     std::string c (""); // the current message
-    printf(">>> %s\n", message.c_str());
-
+    printf(">>> %s\n", message.c_str()); 
     while (curr < message.length()){
         if (message[curr] != ' '){
             c += message[curr];
             curr++;
-        } else{
-            if (c == "WALK"){
+        }
+        if (c == "WALK"){
                 std::string r = message.substr(curr + 1, message.length()); //remaining string
                 handle_walk(r);
                 break;
-            }else if (c == "STOPWALK"){
-                stopWalking();
-                ws->close();
-                break;
             }
+        if (c == "STOPWALK"){
+            stopWalking();
+            ws->close();
+            break;
         }
     }
 }
@@ -97,6 +96,7 @@ int main()
 
     while (ws->getReadyState() != easywsclient::WebSocket::CLOSED) {
         ws->poll();
+        
         ws->dispatch(handle_message);
     }   
     delete ws; 
