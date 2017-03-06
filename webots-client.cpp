@@ -26,6 +26,25 @@ static easywsclient::WebSocket::pointer ws = NULL;
 // the function stopWalking() should be called and the connection should close;
 
 
+void handle_motors(const std::string & r){
+    size_t curr2 = 0;
+    std::string c2 = ""; // the current message in this loop
+    double motor_num = 0.0;
+    double motor_pos = 0.0;
+    std::string r2; 
+    while (curr2 < r.length()){
+        if (r[curr2] != ' '){
+            c2 += r[curr2];
+            curr2++;
+        } else{
+            motor_num = stod(c2);
+            r2 = r.substr(curr2 + 1, r.length());
+            motor_pos = stod(r2);
+            move(motor_num, motor_pos);
+           break;
+        }
+    }
+}
 
 void handle_walk(const std::string & r){
     size_t curr2 = 0;
@@ -68,6 +87,11 @@ void handle_message(const std::string & message)
         if (c == "STOPWALK"){
             stopWalking();
             ws->close();
+            break;
+        }
+        if (c == "MOVE_MOTORS"){
+            std:: string r = message.substr(curr + 1, message.length()); //remaining string
+            handle_motors(r);
             break;
         }
     }
