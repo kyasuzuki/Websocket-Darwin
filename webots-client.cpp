@@ -8,6 +8,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string>
+#include <sstream>
 
 //webots
 #include "walk-client.h"
@@ -20,57 +21,30 @@
 
 static easywsclient::WebSocket::pointer ws = NULL;
 
-// "WALK 5.8 30.0"
-// walk --> Walk(5,8 30.0);
-// "STOPWALK"
-// stopWalking();
-
-
-
-void handle_walk(const std::string & r){
-    size_t curr2 = 0;
-    std::string c2 = ""; // the current message in this loop
-    double speed = 0.0;
-    double angle = 0.0;
-    std::string r2; 
-    while (curr2 < r.length()){
-        if (r[curr2] != ' '){
-            c2 += r[curr2];
-            curr2++;
-        } else{
-            speed = stod(c2);
-            r2 = r.substr(curr2 + 1, r.length());
-            angle = stod(r2);
-            walk(speed, angle);
-            break;
-        }
-    }
-
-}
-
 
 void handle_message(const std::string & message)
 {
+    std::istringstream str(message);
+    std::string cmd; //command
+    str >> cmd;
 
-    size_t curr = 0; // the cursor
-    std::string c (""); // the current message
-    printf(">>> %s\n", message.c_str());
-
-    while (curr < message.length()){
-        if (message[curr] != ' '){
-            c += message[curr];
-            curr++;
-        } else{
-            if (c == "WALK"){
-                std::string r = message.substr(curr + 1, message.length()); //remaining string
-                handle_walk(r);
-                break;
-            }else if (c == "STOPWALK"){
-                stopWalking();
-                ws->close();
-                break;
-            }
+    if (cmd == "WALK"){
+        double speed;
+        double angle;
+        str >> speed;
+        str >> angle;
+        walk(speed, angle);
         }
+    if (cmd == "STOPWALK"){
+    stopWalking();
+    ws->close();
+    }
+    if (cmd == "MOVE_MOTORS"){
+        double motor_num;
+        double motor_pos;
+        str >> motor_num;
+        str >> motor_pos;
+        move(motor_num, motor_pos);
     }
 }
 

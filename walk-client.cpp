@@ -16,5 +16,10 @@ cout << "walk command recieved\n";
 void stopWalking(){
     // stops Darwin from walking
     // DREW WRITE THIS
-    cout << "stopwalk command recieved";
+    cout << "stopwalk command recieved\n";
 }
+
+void move(double motor_num, double motor_pos){
+    //moves the selected motors to the selected position
+    cout << "move_motors command recieved\n";
+    }
